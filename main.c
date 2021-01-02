@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 
     initialisation(soignant, lambda, &cpt_lambda, &cpt_virus, &cpt_soignant, N, M, emplacement, vie_virus);
     afficher(N, M, emplacement);
-
+    printf("compteur lambda : %d\ncompteur virus : %d\ncompteur soignant : %d\n", cpt_lambda, cpt_virus, cpt_soignant);
     free(lambda);
     lambda = NULL;
     free(soignant);
