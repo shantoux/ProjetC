@@ -3,7 +3,7 @@
 
 //------------------------------//:FONCTION:\\---------------------------------\\
 
-void initialisation(Bonhomme soignant[], Bonhomme lambda[], int * cpt_lambda, int * cpt_virus, int * cpt_soignant, int nrow, int ncol, Case emplacement[nrow][ncol], int vie_virus[])
+void initialisation(Bonhomme **soignant, Bonhomme **lambda, int * cpt_lambda, int * cpt_virus, int * cpt_soignant, int nrow, int ncol, Case emplacement[nrow][ncol], int vie_virus[])
 {
     //ok donc maintenant que les structures et les listes sont mises en place, y'a plus qu'à.
     //1. on initialise une première grille de N par M cases. Il faut faire le tour de chaque case et faire poper les soigneurs, les virus et les civils.
@@ -40,45 +40,45 @@ void initialisation(Bonhomme soignant[], Bonhomme lambda[], int * cpt_lambda, in
           //alors presence d'un lambda
           emplacement[i][j].occupee = 1;
           emplacement[i][j].presence_lambda = 1;
-          lambda[*cpt_lambda].localisation.y = i;
-          lambda[*cpt_lambda].localisation.x = j;
+          (*lambda)[*cpt_lambda].localisation.y = i;
+          (*lambda)[*cpt_lambda].localisation.x = j;
           *cpt_lambda += 1;
 
           //realloc puisqu'on ajoute un élément au tableau lambda
-          tempL = realloc (lambda, (*cpt_lambda+1) * sizeof(Bonhomme));
-          if ( tempL == NULL )
+          tempL = realloc (*lambda, (*cpt_lambda+1) * sizeof(Bonhomme));
+          if (tempL == NULL)
           {
             fprintf(stderr,"Reallocation impossible");
-            free(lambda);
-            lambda = NULL;
+            free(*lambda);
+            *lambda = NULL;
             exit(EXIT_FAILURE);
           }
           else
           {
-            lambda = tempL;
+            *lambda = tempL;
           }
         }
         else if (nbrAlea > PROB_V+PROB_L && nbrAlea <= PROB_V+PROB_L+PROB_S)
         {   //presence d'un soignant
           emplacement[i][j].occupee = 1;
           emplacement[i][j].presence_soignant = 1;
-          soignant[*cpt_soignant].localisation.y = i;
-          soignant[*cpt_soignant].localisation.x = j;
-          soignant[*cpt_soignant].vocation = 1;
+          (*soignant)[*cpt_soignant].localisation.y = i;
+          (*soignant)[*cpt_soignant].localisation.x = j;
+          (*soignant)[*cpt_soignant].vocation = 1;
           *cpt_soignant += 1;
 
           //realloc puisqu'on ajoute un élément au tableau soignant
-          tempS = realloc (soignant, (*cpt_soignant+1) * sizeof(Bonhomme));
+          tempS = realloc (*soignant, (*cpt_soignant+1) * sizeof(Bonhomme));
           if ( tempS == NULL )
           {
             fprintf(stderr,"Reallocation impossible");
-            free(soignant);
-            soignant = NULL;
+            free(*soignant);
+            *soignant = NULL;
             exit(EXIT_FAILURE);
           }
           else
           {
-            soignant = tempS;
+            *soignant = tempS;
           }
         }
 
