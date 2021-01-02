@@ -11,10 +11,10 @@ int main(int argc, char* argv[])
 {
     int vie_virus[5] = {0,1,2,3,4}; //Tableau vers lequel pointe cpt_virus
     Case emplacement[N][M]={0}; //initialisation de l'environnement avec des valeurs à 0
-    int cpt_lambda=1;
-    int cpt_virus;
-    int cpt_soignant=1;
-    int cpt_infecté;
+    int cpt_lambda=0;
+    int cpt_virus=0;
+    int cpt_soignant=0;
+    int cpt_infecté=0;
 
     //Allocation dynamique pour les tableaux soignants et lambda
     Bonhomme * soignant;
@@ -40,8 +40,6 @@ int main(int argc, char* argv[])
 
     initialisation(soignant, lambda, &cpt_lambda, &cpt_virus, &cpt_soignant, N, M, emplacement, vie_virus);
     afficher(N, M, emplacement);
-    printf("%d \n", soignant[10].localisation.y);
-    printf("%d \n", soignant[10].localisation.x);
 
     free(lambda);
     lambda = NULL;
