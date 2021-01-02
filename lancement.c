@@ -1,6 +1,6 @@
 #include "lancement.h"
 
-//------------------------------//:FONCTION:\\---------------------------------\\
+//------------------------------||:FONCTION:||---------------------------------||
 
 void lancement(Bonhomme lambda[], Bonhomme soigneur[], Case emplacement[][])
 {
