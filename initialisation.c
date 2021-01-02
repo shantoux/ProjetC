@@ -1,7 +1,7 @@
 #include "initialisation.h"
 
 
-//------------------------------//:FONCTION:\\---------------------------------\\
+//------------------------------||:FONCTION:||---------------------------------||
 
 void initialisation(Bonhomme **soignant, Bonhomme **lambda, int * cpt_lambda, int * cpt_virus, int * cpt_soignant, int nrow, int ncol, Case emplacement[nrow][ncol], int vie_virus[])
 {
@@ -88,7 +88,7 @@ void initialisation(Bonhomme **soignant, Bonhomme **lambda, int * cpt_lambda, in
 }
 
 
-//-------------------------------//:IMPLEMENTATION DES FONCTIONS:\\----------------------------------\\
+//-------------------------------||:IMPLEMENTATION DES FONCTIONS:||----------------------------------||
 
 int pioche(int min, int max) //pioche un chiffre entre un minimum et maximum. création d'une valeur quasi-aléatoire (dépend du temps)
 {
