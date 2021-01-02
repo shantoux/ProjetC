@@ -10,7 +10,7 @@
 
 //-------------------------------//:PROTOTYPES DES FONCTIONS:\\----------------------------------\\
 
-void initialisation(Bonhomme **soignant, Bonhomme **lambda[], int * cpt_lambda, int * cpt_virus, int * cpt_soignant, int nrow, int ncol, Case emplacement[nrow][ncol], int vie_virus[]);
+void initialisation(Bonhomme **soignant, Bonhomme **lambda, int * cpt_lambda, int * cpt_virus, int * cpt_soignant, int nrow, int ncol, Case emplacement[nrow][ncol], int vie_virus[]);
 int pioche(int min, int max);
 
 //---------------------------------------------------------------------------------------------------
