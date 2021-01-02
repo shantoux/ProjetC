@@ -2,7 +2,7 @@
 
 //modifier pour ajouter les cas "affectés".
 
-//------------------------------//:FONCTION:\\---------------------------------|
+//------------------------------||:FONCTION:||---------------------------------|
 
 void afficher(int nrow, int ncol, Case matrice[nrow][ncol])
 {
