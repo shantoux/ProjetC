@@ -22,8 +22,6 @@ void initialisation(Bonhomme soignant[], Bonhomme lambda[], int * cpt_lambda, in
     // INITIALISATION
     int i, j;
     int nbrAlea;
-    *cpt_lambda = 0;
-    *cpt_soignant = 0;
     srand(time(NULL));
     for (i = 0; i < N; i++)
     {
