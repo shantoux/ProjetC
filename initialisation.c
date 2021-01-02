@@ -1,8 +1,9 @@
 #include "initialisation.h"
 
+
 //------------------------------//:FONCTION:\\---------------------------------\\
 
-int initialisation()
+void initialisation(Bonhomme soignant[], Bonhomme lambda[], int * cpt_lambda, int * cpt_virus, int * cpt_soignant, int nrow, int ncol, Case emplacement[nrow][ncol], int vie_virus[])
 {
     //ok donc maintenant que les structures et les listes sont mises en place, y'a plus qu'à.
     //1. on initialise une première grille de N par M cases. Il faut faire le tour de chaque case et faire poper les soigneurs, les virus et les civils.
@@ -12,25 +13,17 @@ int initialisation()
     Bonhomme * tempS; //tableaux temporaires pour les realloc
     Bonhomme * tempL; //tableau temporaire pour les realloc
 
-    soignant = malloc (sizeof(Bonhomme));
 
-    if( soignant == NULL )
-    {
-      fprintf(stderr,"Allocation impossible");
-      exit(EXIT_FAILURE);
-    }
 
-    lambda = malloc (sizeof(Bonhomme));
-    if( lambda == NULL )
-    {
-      fprintf(stderr,"Allocation impossible");
-      exit(EXIT_FAILURE);
-    }
+
+
 
 
     // INITIALISATION
-    int i, j, cpt_lambda = 0, cpt_soignant = 0, compteur_virus=0;
+    int i, j;
     int nbrAlea;
+    *cpt_lambda = 0;
+    *cpt_soignant = 0;
     srand(time(NULL));
     for (i = 0; i < N; i++)
     {
@@ -42,23 +35,24 @@ int initialisation()
         {
         //alors présence d'un virus
           emplacement[i][j].PV_virus = vie_virus[4];//initialisation du compteur de vie du virus pour cette case
-          compteur_virus += 1;
+          *cpt_virus += 1;
         }
         else if (nbrAlea > PROB_V && nbrAlea <= PROB_V+PROB_L)
         {
           //alors presence d'un lambda
           emplacement[i][j].occupee = 1;
           emplacement[i][j].presence_lambda = 1;
-          lambda[cpt_lambda].localisation.x = i;
-          lambda[cpt_lambda].localisation.y = j;
-          cpt_lambda += 1;
+          lambda[*cpt_lambda].localisation.y = i;
+          lambda[*cpt_lambda].localisation.x = j;
+          *cpt_lambda += 1;
 
           //realloc puisqu'on ajoute un élément au tableau lambda
-          tempL = realloc (lambda, (cpt_lambda+1) * sizeof(Bonhomme));
+          tempL = realloc (lambda, (*cpt_lambda+1) * sizeof(Bonhomme));
           if ( tempL == NULL )
           {
             fprintf(stderr,"Reallocation impossible");
             free(lambda);
+            lambda = NULL;
             exit(EXIT_FAILURE);
           }
           else
@@ -70,17 +64,18 @@ int initialisation()
         {   //presence d'un soignant
           emplacement[i][j].occupee = 1;
           emplacement[i][j].presence_soignant = 1;
-          soignant[cpt_soignant].localisation.x = i;
-          soignant[cpt_soignant].localisation.y = j;
-          soignant[cpt_soignant].vocation = 1;
-          cpt_soignant += 1;
+          soignant[*cpt_soignant].localisation.y = i;
+          soignant[*cpt_soignant].localisation.x = j;
+          soignant[*cpt_soignant].vocation = 1;
+          *cpt_soignant += 1;
 
           //realloc puisqu'on ajoute un élément au tableau soignant
-          tempS = realloc (soignant, (cpt_soignant+1) * sizeof(Bonhomme));
+          tempS = realloc (soignant, (*cpt_soignant+1) * sizeof(Bonhomme));
           if ( tempS == NULL )
           {
             fprintf(stderr,"Reallocation impossible");
             free(soignant);
+            soignant = NULL;
             exit(EXIT_FAILURE);
           }
           else
@@ -88,15 +83,10 @@ int initialisation()
             soignant = tempS;
           }
         }
-        printf("virus : %d, lambda : %d, soignant : %d\n", compteur_virus, cpt_lambda, cpt_soignant);
+
+        //printf("virus : %d, lambda : %d, soignant : %d\n", *cpt_virus, *cpt_lambda, *cpt_soignant);
        }
      }
-     affiche_grille(N, M, emplacement);
-     free(lambda);
-     lambda = NULL;
-     free(soignant);
-     soignant = NULL;
-     return EXIT_SUCCESS;
 }
 
 
