@@ -1,7 +1,7 @@
 #ifndef UTILS
 #define UTILS
 
-//-------------------------------//:INCLUDE & DEFINE:\\----------------------------------\\
+//-------------------------------||:INCLUDE & DEFINE:||----------------------------------||
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +10,7 @@
 #define N 20
 #define M 20
 
-//-------------------------------//:STRUCTURES:\\----------------------------------\\
+//-------------------------------||:STRUCTURES:||----------------------------------||
 
 typedef struct Coordonnees Coordonnees; //les coordonnees determinent une case précise dans la matrice.
 struct Coordonnees
