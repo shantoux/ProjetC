@@ -16,16 +16,7 @@ void deplacement(Bonhomme **soignant, int MAX_S, Bonhomme **lambda, int MAX_L, i
         if ((*lambda[i]).etat != MALADE && (*lambda[i]).etat != MORT)
         //if (*soignant)[i].malade < 2) COMPRENDS PAS
         {
-            if (emplacement[(*lambda)[i].localisation.y][(*lambda)[i].localisation.i].gradient > 0)
-            //si je suis sur un gradient : je vais dans la direction opposée
-            {
-
-                inverse_gradient(); //pas créé.
-            }
-            else //sinon j'avance ou je reste à l'arrêt (la fonction s'adapte également à la collision)
-            {
-                quel_chemin((*lambda)[i]);
-            }
+          quel_chemin((*lambda)[i]);
         }
 
         if (emplacement[(*lambda)[i].localisation.y][(*lambda)[i].localisation.x].PV_virus != 0 && (*lambda)[i].etat == SAIN)
@@ -46,21 +37,16 @@ void deplacement(Bonhomme **soignant, int MAX_S, Bonhomme **lambda, int MAX_L, i
             }
             else
             {
-                contamination(*lambda[i]); //P chance de contaminer une des cases autour de l'asymptomatique.
+                Case* choix;
+                contamination(*lambda[i], N, M, emplacement, choix); //P chance de contaminer une des cases autour de l'asymptomatique.
                 //Retourne la case en question et :
-                if ((*choix).occupe != 0 &&) //(*choix).malade == 0)?????? //si case occupée, infection du bonhomme s'il est sain
+                if ((*choix).occupee != 0) //(*choix).malade == 0)?????? //si case occupée, infection du bonhomme s'il est sain
                 {
-                  if ((*choix).vocation == 0)
+                  if ((*choix).lambda_present -> etat == SAIN)
                   {
-                      infection(&lambda);
+                      infection(*choix.lambda_present);
                   }
-                  else //le soignant a une immunité unique par virus... comment faire ?
-                  {
-                    un2plus(); //un virus de plus
-                    *cpt_virus++;//???
-                  }
-                }
-                else if ((*choix).occupe == 0)
+                else if ((*choix).occupee == 0)
                 {
                   un2plus(); //un virus de plus
                   *cpt_virus++;
@@ -68,19 +54,19 @@ void deplacement(Bonhomme **soignant, int MAX_S, Bonhomme **lambda, int MAX_L, i
             }
         }
 
-        if ((*lambda)[i].malade == 2) //si je suis malade : j'ai P chance de mourir et L chance de survivre
+        if ((*lambda)[i].etat == malade) //si je suis malade : j'ai P chance de mourir et L chance de survivre
         {
               int mortel = probabilite(PROB_MOURIR, PROB_VIVRE, NULL);
-              if (mortel == 1)
+              if (mortel == 1)//lambda meurt
               {
-                  zone_gradient(emplacement, 2); //
-                  (*lambda)[i].malade = 3;
+                  zone_gradient(emplacement, 2); //retrait de zone de gradient
+                  (*lambda)[i].etat = MORT;
                   cpt_infecte--;
                   emplacement[(*lambda)[i].localisation.x][(*lambda)[i].localisation.y].occupee = 0;
-                  emplacement[(*lambda)[i].localisation.x][(*lambda)[i].localisation.y].presence_lambda = 0;
-                  emplacement[(*lambda)[i].localisation.x][(*lambda)[i].localisation.y].pv_virus = 4;
-                  (*lambda)[i].localisation.x = NULL;
-                  (*lambda)[i].localisation.y = NULL;
+                  emplacement[(*lambda)[i].localisation.x][(*lambda)[i].localisation.y].lambda_present = NULL;
+                  emplacement[(*lambda)[i].localisation.x][(*lambda)[i].localisation.y].PV_virus = 4;
+                  //(*lambda)[i].localisation.x = NULL; on ne les affiche pas les mort, peut être pas utile ?
+                  //(*lambda)[i].localisation.y = NULL;
                   un2plus();
                   *cpt_virus++;
               }
@@ -154,12 +140,11 @@ void deplacement(Bonhomme **soignant, int MAX_S, Bonhomme **lambda, int MAX_L, i
             }
             else
             {
-              Case *choix;
-              contamination(&choix); //P chance de contaminer une des cases autour de l'asymptomatique.
+              contamination(Bonhomme *bonhomme, int nrow, int ncol, Case matrice[nrow][ncol]); //P chance de contaminer une des cases autour de l'asymptomatique.
               //Retourne la case en question et :
               if ((*choix).occupe != 0 && ...) //(*choix).malade == 0)???? //si case occupée, infection du bonhomme s'il est sain (A MODIFIER!!!!!!)
               {
-                if ((*choix).vocation == 0 )
+                if ((*choix).presence_lambda == 1 )
                 {
                     infection(&lambda);
                 }
@@ -230,6 +215,7 @@ void deplacement(Bonhomme **soignant, int MAX_S, Bonhomme **lambda, int MAX_L, i
 
 void quel_chemin(Bonhomme *bonhomme, int i, int N, int M, Case emplacement[N][M]) //en fonction de la direction de départ, utilise probabilité() et choisi une nouvelle direction
 {
+
     int resultat = probabilite(PROB_ARRET, PROB_DEPLACEMENT); //ARRET 30%, DEPLACEMENT 70%
     int direction_temp = NULL; //on stock la nouvelle direction de manière temporaire si jamais il y a un obstacle.
     if (resultat == 2) //le Bonhomme se déplace
@@ -244,7 +230,7 @@ void quel_chemin(Bonhomme *bonhomme, int i, int N, int M, Case emplacement[N][M]
             srand(time(NULL));
             direction_temp = pioche_nouvelle(bonhomme[i].direction);
           }
-          if (obstacle_lambda(direction_temp, N, M, emplacement, bonhomme[i].localisation) != 1)
+          if (obstacle_bonhomme(direction_temp, N, M, emplacement, bonhomme[i].localisation, bonhomme[i]) != 1)
           {
               liberation_case(bonhomme[i].localisation.y, bonhomme[i].localisation.x, emplacement);
               Changement_coordonnees(bonhomme[i].localisation, direction_temp);
@@ -294,37 +280,38 @@ void colision(int direction_temp, int N, int M, Case emplacement[N][M], Bonhomme
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void contamination(&choix)
+void contamination(Bonhomme *bonhomme, int nrow, int ncol, Case matrice[nrow][ncol], Case *emplacement_choisi)
 {
   int resultat = pioche(1,9);
   switch (resultat)
   {
   case 1 :
-      *choix = emplacement[((*bonhomme)[i].localisation.x)-1][((*bonhomme)[i].localisation.y)+1]; //case au sud-ouest
+      emplacement_choisi = matrice[((*bonhomme)[i].localisation.y)-1][((*bonhomme)[i].localisation.x)+1];//case au nord est
       break;
   case 2 :
-      *choix = emplacement[(*bonhomme)[i].localisation.x][((*bonhomme)[i].localisation.y)+1]; //case au sud
+      emplacement_choisi = matrice[(*bonhomme)[i].localisation.y][((*bonhomme)[i].localisation.x)+1]; //case à l'est
       break;
   case 3 :
-      *choix = emplacement[((*bonhomme)[i].localisation.x)+1][((*lambda)[i].localisation.y)+1]; //case au sud-est
+      emplacement_choisi = matrice[((*bonhomme)[i].localisation.y)+1][((*lambda)[i].localisation.x)+1]; //case au sud-est
       break;
   case 4 :
-      *choix = emplacement[((*bonhomme)[i].localisation.x)-1][(*bonhomme)[i].localisation.y]; //case à l'ouest
+      emplacement_choisi = matrice[((*bonhomme)[i].localisation.y)-1][(*bonhomme)[i].localisation.x]; //case à l'ouest
       break;
   case 5 :
-      *choix = emplacement[(*bonhomme)[i].localisation.x][(*bonhomme)[i].localisation.y]; //case de l'asymptomatique
+      emplacement_choisi = matrice[(*bonhomme)[i].localisation.y][(*bonhomme)[i].localisation.x]; //case de l'asymptomatique
       break;
   case 6 :
-      *choix = emplacement[((*bonhomme)[i].localisation.x)+1][(*bonhomme)[i].localisation.y]; //case à l'est
+      emplacement_choisi = matrice[((*bonhomme)[i].localisation.y)+1][(*bonhomme)[i].localisation.x]; //case à l'est
+
       break;
   case 7 :
-      *choix = emplacement[((*bonhomme)[i].localisation.x)-1][((*bonhomme)[i].localisation.y)-1]; //case au nord-ouest
+      emplacement_choisi = matrice[((*bonhomme)[i].localisation.y)-1][((*bonhomme)[i].localisation.x)-1]; //case au nord-ouest
       break;
   case 8 :
-      *choix = emplacement[(*bonhomme)[i].localisation.x][((*bonhomme)[i].localisation.y)-1]; //case au nord
+      emplacement_choisi = matrice[(*bonhomme)[i].localisation.y][((*bonhomme)[i].localisation.x)-1]; //case au nord
       break;
   case 9 :
-      *choix = emplacement[((*bonhomme)[i].localisation.x)+1][((*bonhomme)[i].localisation.y)-1]; //case au nord-est
+      emplacement_choisi = matrice[((*bonhomme)[i].localisation.y)+1][((*bonhomme)[i].localisation.x)-1]; //case au nord-est
       break;
   default :
     printf("la contamination de l'asymptomatique ne fonctionne pas");
@@ -441,20 +428,20 @@ void Changement_coordonnees(Coordonnees *anciennes, Dir nouvelle)
 void liberation_case(int i, int j, Case place[i][j])
 {
   place[i][j].occupee = 0;
-  place[i][j].presence_lambda = 0;
-  place[i][j].presence_soignant = 0;
+  place[i][j].lambda_present = NULL;
+  place[i][j].soignant_present = NULL;
 }
 
-void nouvelle_case(int i, int j, Case place[i][j], Bonhomme entite[])
+void nouvelle_case(int i, int j, Case place[i][j], Bonhomme entite, int indice)
 {
   place[i][j].occupee = 1;
   if (entite.vocation == 1)
   {
-    place[i][j].presence_soignant = 0;
+    place[i][j].soignant_present = entite[indice];
   }
   else
   {
-    place[i][j].presence_lambda = 0;
+    place[i][j].lambda_present = entite[indice];
   }
 }
 
@@ -470,25 +457,55 @@ Dir pioche_nouvelle(Dir ancienne)
   return tab[a];
 }
 
-int obstacle_lambda(Dir nouvelle, int Long, int Larg, Case matrice[Long][Larg], Coordonnees *anciennes)
+int obstacle_bonhomme(Dir nouvelle, int Long, int Larg, Case matrice[Long][Larg], Coordonnees *anciennes, Bonhomme *entite, int indice)
 {
   Coordonnees tampon;
   tampon = *anciennes;
   Changement_coordonnees(&tampon, nouvelle);
-  if (matrice[tampon.y][tampon.x].occupee == 1 || matrice[tampon.y][tampon.x].gradient != 0)
+  if (entite[indice].vocation == 0)
   {
-    return 1;
+    if (matrice[tampon.y][tampon.x].occupee == 1 || matrice[tampon.y][tampon.x].gradient > matrice[*anciennes.y][*anciennes.x].gradient)
+    {
+      return 1;
+    }
+    else
+    {
+      return 0;
+    }
   }
   else
   {
-    return 0;
+    if (matrice[tampon.y][tampon.x].occupee == 1 || matrice[tampon.y][tampon.x].gradient < matrice[*anciennes.y][*anciennes.x].gradient)
+    {
+      return 1;
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
+}
+
+Dir fonction_gradient(Case *place, Bonhomme *entite, int indice, Coordonnees *anciennes)
+{
+  Dir tab[8] = {NORD, SUD, EST, OUEST, NO, NE, SO, SE};
+  Dir nouvelle = 0;
+  Coordonnees tampon;
+  tampon = *anciennes;
+
+  if (entite[indice].vocation == 1)
+  {
+    int k;
+    while (k < 8 && nouvelle == 0)
+    {
+      Changement_coordonnees(&tampon, tab[k]);
+      if (place[anciennes.y][anciennes.x].gradient < place[tampon.y][tampon.x].gradient)
+      {
+
+      }
+    }
   }
 }
 
-void fonction_gradient(int i, int j, Case place[i][j], Bonhomme entite[indice])
-{
-  if (entite[indice].vocation == 1)
-  {
-    for (i = (entite[indice].localisation.y - 1+N)%N, )
-  }
-}
+Bonhomme

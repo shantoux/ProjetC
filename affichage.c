@@ -22,44 +22,44 @@ void afficher(int nrow, int ncol, Case matrice[nrow][ncol])
 
       for (j = 0; j < ncol; j++)
       {
-        if ((matrice[i][j].lambda_present).malade)
+        if (matrice[i][j].lambda_present->etat == MALADE || matrice[i][j].soignant_present -> etat == MALADE)
         {
           couleur("31");
           printf("%2c ", 'M');
           couleur("0");
           printf("|");
         }
-        else
-
-          if (matrice[i][j].lambda_present != 0)
-          {
-            if (matrice[i][j].PV_virus > 0 && !(matrice[i][j].lambda_present -> malade))
+        else if (matrice[i][j].lambda_present != NULL)
+        {
+            if (matrice[i][j].lambda_present -> etat == SAIN))
+            {
+              affichage_direction(matrice[i][j].lambda_present -> direction)
+              printf("|");
+            }
+            else if (matrice[i][j].lambda_present -> etat == ASYMPTO)
             {
               couleur("33");
-              printf("%2c ", 'L');
+              affichage_direction(matrice[i][j].lambda_present -> direction)
               couleur("0");
               printf("|");
-            }
-            else if (*(matrice[i][j].lambda_present).malade)
-            {
-              couleur("31");
-              printf("%2c ", 'M');
-              couleur("0");
-              printf("|");
-            }
-            else
-            {
-              printf("%2c |", 'L');
             }
           }
-          else if (matrice[i][j].presence_soignant != 0)
+          else if (matrice[i][j].presence_soignant != NULL)
           {
-            couleur("32;1");
-            printf("%2c ", 'S');
-            couleur("0");
-            printf("|");
+            if (matrice[i][j].presence_soignant -> etat == SAIN)
+            { couleur("32;1");
+              printf("%2c ", 'S');
+              couleur("0");
+              printf("|");
+            }
+            else if (matrice[i][j].presence_soignant -> etat == ASYMPTO)
+            {
+              couleur("33;1");
+              printf("%2c ", 'S');
+              couleur("0");
+              printf("|");
+            }
           }
-        }
         else if (matrice[i][j].PV_virus > 0)
         {
           couleur("41");
@@ -81,5 +81,21 @@ void afficher(int nrow, int ncol, Case matrice[nrow][ncol])
         }
 
       putchar('\n');
+
   }
+}
+
+
+
+
+void affichage_direction(Dir direction)
+{
+  if (direction == NORD) { printf("%2c ", '∧');}
+  else if (direction == SUD) { printf("%2c ", '∨');}
+  else if (direction == EST) { printf("%2c ", '>');}
+  else if (direction == OUEST) { printf("%2c ", '<');}
+  else if (direction == NE) { printf("%2c ", '/');}
+  else if (direction == SO) { printf("%2c ", '/');}
+  else if (direction == NO) { printf("%2c ", '\\');}
+  else if (direction == SE) { printf("%2c ", '\\');}
 }

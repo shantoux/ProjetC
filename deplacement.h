@@ -27,6 +27,7 @@
   void nouvelle_case(int i, int j, Case place[i][j], Bonhomme entite[]);
   Dir pioche_nouvelle(Dir ancienne);
   int obstacle_lambda(Dir nouvelle, int Long, int Larg, Case matrice[Long][Larg], Coordonnees *anciennes);
+  Dir fonction_gradient(Case *place, Bonhomme *entite, int indice, Coordonnees *anciennes);
 
 
 

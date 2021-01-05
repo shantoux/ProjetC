@@ -78,7 +78,8 @@ void initialisation(Bonhomme **soignant, Bonhomme **lambda, Coordonnees **virus,
         {
             //alors presence d'un lambda
             emplacement[i][j].occupee = 1;
-            emplacement[i][j].presence_lambda = 1;
+            emplacement[i][j].lambda_present = (*lambda)[*cpt_lambda];
+            emplacement[i][j].soignant_present = NULL;
             (*lambda)[*cpt_lambda].localisation.y = i;
             (*lambda)[*cpt_lambda].localisation.x = j;
             attribution_direction(*lambda, *cpt_lambda);
@@ -101,7 +102,8 @@ void initialisation(Bonhomme **soignant, Bonhomme **lambda, Coordonnees **virus,
         else if (resultat == 3)
         {   //presence d'un soignant
             emplacement[i][j].occupee = 1;
-            emplacement[i][j].presence_soignant = 1;
+            emplacement[i][j].soignant_present = (*soignant)[*cpt_soignant];
+            emplacement[i][j].lambda_present = NULL;
             (*soignant)[*cpt_soignant].localisation.y = i;
             (*soignant)[*cpt_soignant].localisation.x = j;
             (*soignant)[*cpt_soignant].vocation = 1;

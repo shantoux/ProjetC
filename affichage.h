@@ -11,6 +11,7 @@
 //-------------------------------||:PROTOTYPES DES FONCTIONS:||----------------------------------||
 
 void afficher(int nrow, int ncol, Case matrice[nrow][ncol]);
+void affichage_direction(Dir direction);
 
 //--------------------------------------------------------------------------------------------------
 

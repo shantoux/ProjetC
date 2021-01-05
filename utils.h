@@ -31,8 +31,8 @@ typedef struct Bonhomme Bonhomme;
 struct Bonhomme
 {
     bool vocation; //indique si le bonhomme est un soigneur (1) ou simple civil (0)
-    int direction; // N, S, E, O, NO, NE, SO, SE//donne la dernière direction du Bonhomme
-    Statut etat; //
+    Dir direction; // N, S, E, O, NO, NE, SO, SE//donne la dernière direction du Bonhomme
+    Statut etat; //SAIN, ASYMPTO, MALADE, MORT
     Coordonnees localisation; //A voir comment les gerer de manière pertinente. Pointeur ? localisation.x = "N" et localisation.y = "M"
     int tmp_infection; //pour les asymptomatiques, indique le nombre de tour encore infecté.
     int atchoum; //seulement pour les civils. Garder dans la structure ? Pointeur vers les vraies cases ?
@@ -44,8 +44,8 @@ struct Case
     bool occupee; //indique la présence d'une des trois entités possibles
     int gradient; //indique le niveau de charge virale (dû à un malade)
     int  PV_virus; //indique le "temps de vie" restant à un virus sur la case
-    bool presence_lambda; //j'ai pas réussi à utiliser les pointeurs ici, il faudra voir si c'est handicapant pour la suite
-    bool presence_soignant;//ici non plus
+    Bonhomme* lambda_present; //j'ai pas réussi à utiliser les pointeurs ici, il faudra voir si c'est handicapant pour la suite
+    Bonhomme* soignant_present;//ici non plus
 };
 
 
