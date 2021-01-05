@@ -19,14 +19,22 @@ struct Coordonnees
     int y;
 };
 
+typedef enum Dir  {
+  NORD, SUD, EST, OUEST, NO, NE, SO, SE
+} Dir;
+
+typedef enum Statut {
+  SAIN, ASYMPTO, MALADE, MORT
+} Statut;
+
 typedef struct Bonhomme Bonhomme;
 struct Bonhomme
 {
     bool vocation; //indique si le bonhomme est un soigneur (1) ou simple civil (0)
-    int direction; //donne la dernière direction du Bonhomme
-    bool malade; // indique si le bonhomme est sain(0) ou malade(1). ??????
-    bool mort; //
+    int direction; // N, S, E, O, NO, NE, SO, SE//donne la dernière direction du Bonhomme
+    Statut etat; //
     Coordonnees localisation; //A voir comment les gerer de manière pertinente. Pointeur ? localisation.x = "N" et localisation.y = "M"
+    int tmp_infection; //pour les asymptomatiques, indique le nombre de tour encore infecté.
     int atchoum; //seulement pour les civils. Garder dans la structure ? Pointeur vers les vraies cases ?
 };
 
@@ -39,6 +47,11 @@ struct Case
     bool presence_lambda; //j'ai pas réussi à utiliser les pointeurs ici, il faudra voir si c'est handicapant pour la suite
     bool presence_soignant;//ici non plus
 };
+
+
+//----------------PROTOTYPES DE FONCTIONS COMMUNES------------------------------------------------------------------
+int pioche(int min, int max);
+int probabilite(int PROBA1, int PROBA2, int PROBA3); //permet de choisir entre 2 ou 3 options en fonction de leur % de chance de séléction.
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------

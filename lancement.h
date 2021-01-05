@@ -6,7 +6,7 @@
 
   //-------------------------------||:PROTOTYPES DES FONCTIONS:||----------------------------------||
 
-  void lancement(Bonhomme lambda[], Bonhomme soigneur[], Case emplacement[][]);
+  void lancement(Bonhomme lambda[], Bonhomme soignant[], Case emplacement[][]);
 
   //---------------------------------------------------------------------------------------------------
 
