@@ -70,7 +70,7 @@ void deplacement(Bonhomme **soignant, int MAX_S, Bonhomme **lambda, int MAX_L, i
                   un2plus();
                   *cpt_virus++;
               }
-              if (mortel == 2) //bonhomme dégage une zone avec gradient indiquant qu'il est dangereux
+              if (mortel == 2) //bonhomme dégage une zone avec gradient indiquant qu'il est malade
               {
                   zone_gradient(emplacement, 1); //
               }
@@ -178,7 +178,7 @@ void deplacement(Bonhomme **soignant, int MAX_S, Bonhomme **lambda, int MAX_L, i
                   un2plus();
                   *cpt_virus++;
               }
-              if (mortel == 2) //bonhomme dégage une zone avec gradient indiquant que je suis dangereux
+              if (mortel == 2) //bonhomme dégage une zone avec gradient indiquant que je suis malade
               {
                   zone_gradient(emplacement, 1);
               }
@@ -252,7 +252,7 @@ void quel_chemin(Bonhomme *bonhomme, int i, int N, int M, Case emplacement[N][M]
 
 void colision(int direction_temp, int N, int M, Case emplacement[N][M], Bonhomme bonhomme[i]) //si sur la case de déplacement se trouve quelqu'un, on ne peut pas y deplacer le bonhomme. dans ce cas 50-50 de s'arrêter ou de changer de direction
 { //CAS OU TOUTES LES CASES AUTOUR SONT BLOQUEES.
-    int libre = obstacle_lambda(direction_temp, N, M, emplacement, bonhomme[i].localisation);
+    int libre = obstacle_bonhomme(direction_temp, N, M, emplacement, bonhomme[i].localisation);
     Dir new_temp;
     while libre < 1
     {
@@ -265,7 +265,7 @@ void colision(int direction_temp, int N, int M, Case emplacement[N][M], Bonhomme
         else
         {
             new_temp = pioche_nouvelle(direction_temp);
-            libre = obstacle_lambda(new_temp, N, M, emplacement, bonhomme[i].localisation);
+            libre = obstacle_bonhomme(new_temp, N, M, emplacement, bonhomme[i].localisation);
         }
     }
     if (libre == 1)
